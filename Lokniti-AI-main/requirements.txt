@@ -1,0 +1,12 @@
+fastapi
+uvicorn
+pillow
+pytesseract
+pypdf
+langchain
+langchain-core
+langchain-community
+langchain-openai
+sentence-transformers
+faiss-cpu
+python-multipart
