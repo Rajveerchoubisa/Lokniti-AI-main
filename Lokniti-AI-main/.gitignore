@@ -1,0 +1,20 @@
+# Secrets and local environment configuration
+.env
+.env.*
+!.env.example
+backend/.env
+frontend/.env
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+uploads/
+
+# Node / Vite
+node_modules/
+dist/
+
+# Generated local artifacts
+tmp/
+output/

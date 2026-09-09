@@ -1,12 +1,45 @@
 from operator import itemgetter
-from langchain_openai import ChatOpenAI
+import os
+
+from dotenv import load_dotenv
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import FAISS
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
+from langchain_google_genai import ChatGoogleGenerativeAI
 
-HF_TOKEN = "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"
+
+load_dotenv()
+
+
+def get_google_api_key():
+    api_key = os.getenv("GOOGLE_API_KEY")
+    if not api_key or api_key == "replace_with_your_new_google_api_key":
+        raise RuntimeError(
+            "GOOGLE_API_KEY is missing. Add a valid key to the project root .env file."
+        )
+    return api_key
+
+
+def build_chat_model():
+    """Use the newest model first and fall back when it is overloaded."""
+    api_key = get_google_api_key()
+    primary = ChatGoogleGenerativeAI(
+        model="gemini-3.8-flash",
+        google_api_key=api_key,
+        temperature=0.0,
+        timeout=90,
+        max_retries=1,
+    )
+    fallback = ChatGoogleGenerativeAI(
+        model="gemini-3.5-flash",
+        google_api_key=api_key,
+        temperature=0.0,
+        timeout=90,
+        max_retries=2,
+    )
+    return primary.with_fallbacks([fallback])
 
 
 def build_user_rag(documents):
@@ -22,12 +55,7 @@ def build_user_rag(documents):
     vectordb = FAISS.from_documents(chunks, embeddings)
     retriever = vectordb.as_retriever(search_kwargs={"k": 8})
 
-    llm = ChatOpenAI(
-        base_url="https://router.huggingface.co/v1",
-        api_key=HF_TOKEN,
-        model="deepseek-ai/DeepSeek-R1",
-        temperature=0.0,
-    )
+    llm = build_chat_model()
 
     prompt = ChatPromptTemplate.from_template("""
 You are a legal assistant.

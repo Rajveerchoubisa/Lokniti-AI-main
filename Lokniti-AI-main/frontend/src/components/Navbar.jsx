@@ -1,17 +1,16 @@
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import { HiOutlineMenuAlt3, HiX } from "react-icons/hi";
 
+export function Brand({ light = false }) {
+  return <Link to="/" className={`brand ${light ? "brand--light" : ""}`} aria-label="Lokniti AI home"><span className="brand__mark">L</span><span>Lokniti <b>AI</b></span></Link>;
+}
 export default function Navbar() {
-  return (
-    <nav className="bg-gray-900 text-white px-6 py-4 flex items-center justify-between border-b border-gray-700">
-      {/* Logo */}
-      <div className="text-xl font-bold">
-        <span className="text-blue-400">Lokniti</span>AI
-      </div>
-      {/* Right Side Buttons */}
-      <div className="flex items-center gap-4">
-        <Link to="/signup" className="text-white  hover:text-blue-500 p-1 ">Sign Up</Link>
-        <Link to="/signin" className="text-white  hover:text-blue-500 ">Sign In</Link>
-      </div>
-    </nav>
-  );
+  const [open, setOpen] = useState(false);
+  return <header className="site-header"><div className="container nav-wrap"><Brand />
+    <button className="nav-toggle" onClick={() => setOpen(!open)} aria-label="Toggle navigation" aria-expanded={open}>{open ? <HiX /> : <HiOutlineMenuAlt3 />}</button>
+    <nav className={`nav-links ${open ? "is-open" : ""}`} aria-label="Primary navigation">
+      <a href="#features" onClick={() => setOpen(false)}>Features</a><a href="#how-it-works" onClick={() => setOpen(false)}>How it works</a><a href="#security" onClick={() => setOpen(false)}>Security</a><span className="nav-divider" />
+      <Link to="/login">Sign in</Link><Link className="button button--dark button--small" to="/register">Try Lokniti free</Link>
+    </nav></div></header>;
 }

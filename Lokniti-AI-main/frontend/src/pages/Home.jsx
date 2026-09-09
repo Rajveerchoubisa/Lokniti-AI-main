@@ -1,35 +1,26 @@
 import { Link } from "react-router-dom";
-import Header from "../components/Navbar";
-import Navbar from "../components/Navbar";
+import { HiArrowRight, HiCheck, HiOutlineDocumentSearch, HiOutlineLightningBolt, HiOutlineLockClosed, HiOutlineUpload } from "react-icons/hi";
+import { FiMessageSquare } from "react-icons/fi";
+import Navbar, { Brand } from "../components/Navbar";
 
 export default function Home() {
-  return (
-    <>
-      {/* Fixed Header */}
-      <div className="fixed bg-gray-900 top-0 left-0 w-full z-10">
-        <Navbar/>
-      </div>
-
-      <div className="flex flex-col items-center justify-center h-screen bg-gray-900 text-white pt-16">
-        <div className="text-center max-w-2xl">
-          <h1 className="text-4xl font-bold mb-4">Welcome to Lokniti</h1>
-          <p className="text-lg text-gray-400 mb-6">
-            Empowering legal professionals with AI-driven research and case management.
-          </p>
-          <div className="flex gap-4 justify-center">
-            <Link to="/login">
-              <button className="bg-blue-500 px-6 py-3 rounded text-white hover:bg-blue-600 transition">
-                Get Started
-              </button>
-            </Link>
-            <Link to="/dashboard">
-              <button className="bg-gray-700 px-6 py-3 rounded text-white hover:bg-gray-600 transition">
-                Explore
-              </button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+  return <div className="landing-page"><Navbar /><main>
+    <section className="hero"><div className="hero-orb hero-orb--one"/><div className="hero-orb hero-orb--two"/><div className="container hero-grid">
+      <div className="hero-copy"><div className="eyebrow"><span/> Built for Indian legal research</div><h1>Complex case files.<br/><em>Clear answers.</em></h1><p className="hero-lead">Upload judgments, petitions, and legal documents. Ask questions in plain language and get precise, context-aware answers in seconds.</p>
+        <div className="hero-actions"><Link to="/dashboard" className="button button--primary">Analyse a document <HiArrowRight /></Link><a href="#how-it-works" className="button button--ghost">See how it works</a></div>
+        <div className="trust-row"><span><HiCheck/> PDF & scanned files</span><span><HiCheck/> Source-grounded answers</span><span><HiCheck/> Secure by design</span></div></div>
+      <div className="product-preview"><div className="preview-top"><i className="red"/><i className="amber"/><i className="green"/><span>Document workspace</span></div><div className="preview-body"><aside className="preview-sidebar"><Brand light/><div className="fake-nav active"/><div className="fake-nav"/><div className="fake-nav short"/></aside><div className="preview-chat">
+        <div className="document-pill"><div className="pdf-icon">PDF</div><div><strong>Constitutional_Appeal.pdf</strong><small>42 pages · Ready</small></div><HiCheck/></div><div className="demo-message">What are the main grounds of appeal?</div><div className="demo-answer"><span>✦</span><div><b>Lokniti AI</b><p>The appeal rests on three primary grounds: procedural irregularity, misapplication of precedent, and a violation of Article 14...</p><small>Sources: Pages 12, 18, 31</small></div></div><div className="suggested-row"><span>Summarise arguments</span><span>What was the ruling?</span></div>
+      </div></div></div>
+    </div></section>
+    <section className="stats-strip"><div className="container stats-grid"><div><strong>Minutes, not hours</strong><span>to understand dense judgments</span></div><div><strong>Document-grounded</strong><span>answers based on your file</span></div><div><strong>24/7 research</strong><span>without the manual search</span></div></div></section>
+    <section className="section" id="features"><div className="container"><div className="section-heading"><span className="kicker">LEGAL RESEARCH, REIMAGINED</span><h2>From document to insight,<br/>without the complexity.</h2><p>Everything you need to read, understand, and research legal material faster.</p></div><div className="feature-grid">
+      <article className="feature-card featured"><div className="feature-icon"><HiOutlineUpload/></div><span>01</span><h3>Upload any case file</h3><p>Work with judgments, petitions, orders, and scanned documents. OCR support extracts text from images, too.</p><div className="mini-upload"><HiOutlineDocumentSearch/><div><b>Drop your case file here</b><small>PDF, PNG or JPG</small></div></div></article>
+      <article className="feature-card"><div className="feature-icon"><FiMessageSquare/></div><span>02</span><h3>Ask in plain language</h3><p>No complex search syntax. Ask the way you would ask a colleague and receive a direct, readable response.</p></article>
+      <article className="feature-card"><div className="feature-icon"><HiOutlineLightningBolt/></div><span>03</span><h3>Find the signal faster</h3><p>Summarise arguments, identify rulings, surface legal issues, and discover relevant precedents.</p></article>
+      <article className="feature-card"><div className="feature-icon"><HiOutlineLockClosed/></div><span>04</span><h3>Research with confidence</h3><p>Answers stay grounded in your uploaded document so you can verify findings against the original material.</p></article>
+    </div></div></section>
+    <section className="section steps-section" id="how-it-works"><div className="container steps-layout"><div><span className="kicker">HOW IT WORKS</span><h2>Legal clarity in three simple steps.</h2><p>Spend less time navigating pages and more time building the argument that matters.</p><Link className="text-link" to="/dashboard">Open your workspace <HiArrowRight/></Link></div><ol className="steps"><li><b>01</b><div><h3>Upload your document</h3><p>Select a PDF or scanned case file.</p></div></li><li><b>02</b><div><h3>Let Lokniti read it</h3><p>The AI extracts and understands the material.</p></div></li><li><b>03</b><div><h3>Ask and explore</h3><p>Get concise answers and continue naturally.</p></div></li></ol></div></section>
+    <section className="cta-section" id="security"><div className="container cta-card"><div><span className="kicker light">YOUR NEXT CASE STARTS HERE</span><h2>Turn legal reading into<br/>legal understanding.</h2></div><Link to="/register" className="button button--cream">Start researching free <HiArrowRight/></Link></div></section>
+  </main><footer><div className="container footer-inner"><Brand/><p>AI-powered legal research, made clear.</p><span>© 2026 Lokniti AI</span></div></footer></div>;
 }

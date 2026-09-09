@@ -1,12 +1,24 @@
+# API server and request handling
 fastapi
-uvicorn
+uvicorn[standard]
+pydantic
+python-multipart
+python-dotenv
+
+# PDF and image text extraction
 pillow
 pytesseract
 pypdf
+
+# RAG orchestration and model integrations
 langchain
 langchain-core
 langchain-community
 langchain-openai
+langchain-google-genai
+langchain-text-splitters
+langchain-huggingface
+
+# Local embeddings and vector search
 sentence-transformers
 faiss-cpu
-python-multipart

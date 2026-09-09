@@ -1,60 +1,39 @@
-from fastapi import FastAPI, UploadFile, File
-from pydantic import BaseModel
-import re
+"""RAG chain used for precedent and similar-case questions.
 
-from ingest import save_file, extract_from_pdf, extract_from_image
-from rag_user import build_user_rag
-from rag import build_rag_chain
-from router import route_query
+The current project does not yet include a searchable case-law database, so
+this chain analyses the uploaded judgment and identifies the legal principles,
+authorities, and precedent relationships contained in that document. It does
+not invent external citations.
+"""
 
-app = FastAPI()
-
-CASE_RAG = build_rag_chain()
-USER_SESSIONS = {}
+from langchain_core.output_parsers import StrOutputParser
+from langchain_core.prompts import ChatPromptTemplate
+from rag_user import build_chat_model
 
 
-class ChatRequest(BaseModel):
-    session_id: str
-    question: str
+def build_rag_chain():
+    """Build the chain used when the router detects a precedent query."""
+    llm = build_chat_model()
 
+    prompt = ChatPromptTemplate.from_template(
+        """
+You are a careful Indian legal research assistant.
 
-@app.post("/upload")
-def upload(session_id: str, file: UploadFile = File(...)):
-    path = save_file(file)
+Analyse only the uploaded-document extract below. Identify any cases,
+statutes, constitutional provisions, or legal principles that are expressly
+mentioned and explain how they relate to the user's question.
 
-    if file.filename.endswith(".pdf"):
-        docs = extract_from_pdf(path)
-    else:
-        docs = extract_from_image(path)
+Do not invent case names, citations, holdings, or facts. If the extract does
+not contain enough information to identify a similar case or precedent, say:
+"The uploaded document does not contain enough information to identify a
+specific similar precedent."
 
-    USER_SESSIONS[session_id] = {
-        "docs": docs,
-        "rag": build_user_rag(docs)
-    }
+Uploaded-document extract:
+{query}
 
-    return {"status": "uploaded"}
+Question:
+{question}
+"""
+    )
 
-
-@app.post("/chat")
-def chat(req: ChatRequest):
-    if req.session_id not in USER_SESSIONS:
-        return {"answer": "Please upload a document first."}
-
-    intent = route_query(req.question)
-
-    if intent == "USER_DOC_QA":
-        rag = USER_SESSIONS[req.session_id]["rag"]
-        raw = rag.invoke({"question": req.question})
-
-    else:
-        uploaded_text = "\n".join(
-            d.page_content for d in USER_SESSIONS[req.session_id]["docs"]
-        )[:4000]
-
-        raw = CASE_RAG.invoke({
-            "query": uploaded_text,
-            "question": req.question
-        })
-
-    clean = re.sub(r"<think>.*?</think>", "", raw, flags=re.DOTALL).strip()
-    return {"answer": clean}
+    return prompt | llm | StrOutputParser()
